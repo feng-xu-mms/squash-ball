@@ -1,0 +1,108 @@
+<html>
+<style>
+	body {
+		padding: 0px;
+		margin: 0px;
+	}
+</style>
+<head>
+	<title>tennis game</title>
+</head>
+
+<body>
+	<div style="text-align:center; margin-bottom: 30px;"><a href="http://www.z1soft.com">BACK TO Z1SOFT HOME</a></div>
+	<div style="width: 100%; text-align:center; margin: auto; ">
+		<canvas id="nyCanvas" width="800px" height="600px"></canvas>
+	</div>
+	<script>
+		let canvas, canvasContext;
+		let ballX;
+		let ballY;
+		let framesPerSecond;
+		let ballSpeedX;
+		let ballSpeedY;
+		let paddleY;
+		let PADDLE_HEIGHT;
+		let PADDLE_WIDTH;
+		let PADDLE_OFFSET;
+
+		function init() {
+			ballX = canvas.width - 10;
+			ballY = Math.floor(Math.random() * canvas.height);
+
+			framesPerSecond = 50;
+			ballSpeedX = 5;
+			ballSpeedY = 5;
+			paddleY = 250;
+			PADDLE_HEIGHT = 100;
+			PADDLE_WIDTH = 10;
+			PADDLE_OFFSET = 20;
+		}
+
+		window.onload = function () {
+			canvas = document.getElementById('nyCanvas');
+			canvasContext = canvas.getContext('2d');
+			const rect = canvas.getBoundingClientRect();
+			console.log(rect);
+			init();
+
+			window.setInterval(() => {
+				move();
+				draw();
+			}, 1000 / framesPerSecond);
+
+			canvas.addEventListener('mousemove', (e) => {
+				if (e.clientY - rect.top > PADDLE_HEIGHT / 2 &&
+					e.clientY - rect.top < canvas.height - PADDLE_HEIGHT / 2)
+				{
+						console.log(e.clientY);
+						paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
+				}
+			});
+/*
+			canvas.addEventListener("touchmove", (e) => {
+				if (e.clientY - rect.top > PADDLE_HEIGHT / 2 &&
+					e.clientY - rect.top < canvas.height - PADDLE_HEIGHT / 2)
+					paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
+			}, false);*/
+		}
+
+		function move() {
+			if (ballX + 10 >= canvas.width) {
+				ballSpeedX = -ballSpeedX;
+			}
+
+			if (ballY + 10 >= canvas.height || ballY <= 0) {
+				ballSpeedY = -ballSpeedY;
+			}
+
+			if (ballX == PADDLE_OFFSET + PADDLE_WIDTH && ballY >= paddleY && ballY <= paddleY + PADDLE_HEIGHT) {
+				ballSpeedX = -ballSpeedX;
+			}
+
+			ballX = ballX + ballSpeedX;
+			ballY = ballY + ballSpeedY;
+		}
+
+		function draw() {
+			colorRect(0, 0, 800, 600, 'black');
+			colorRect(ballX, ballY, 10, 10, 'red');
+			colorRect(PADDLE_OFFSET, paddleY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white');
+
+			if(ballX < 0) {
+				canvasContext.font = "30px Comic Sans MS";
+				canvasContext.fillStyle = "red";
+				canvasContext.textAlign = "center";
+				canvasContext.fillText("Game over, refresh to play again!", canvas.width/2, canvas.height/2); 
+			}
+		}
+
+		function colorRect(startX, startY, width, height, color) {
+			canvasContext.fillStyle = color;
+			canvasContext.fillRect(startX, startY, width, height);
+		}
+
+	</script>
+</body>
+
+</html>
