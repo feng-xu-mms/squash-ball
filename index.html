@@ -52,7 +52,7 @@
 				if (e.clientY - rect.top > PADDLE_HEIGHT / 2 &&
 					e.clientY - rect.top < canvas.height - PADDLE_HEIGHT / 2)
 				{
-						paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
+					paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
 				}
 			});
 		}
@@ -62,7 +62,11 @@
 				ballSpeedX = -ballSpeedX;
 			}
 
-			if (ballY + ballSize >= canvas.height || ballY <= 0) {
+			if (ballY + ballSize >= canvas.height && ballSpeedY > 0) {
+				ballSpeedY = -ballSpeedY;
+			}
+
+			if (ballY <= 0 && ballSpeedY < 0) {
 				ballSpeedY = -ballSpeedY;
 			}
 
