@@ -10,11 +10,12 @@
 </head>
 
 <body>
-	<div style="width: 100%; text-align:center; margin: auto; ">
+	<div>
 		<canvas id="nyCanvas" width="800px" height="600px"></canvas>
 	</div>
 	<script>
 		let canvas, canvasContext;
+		let ballSize;
 		let ballX;
 		let ballY;
 		let framesPerSecond;
@@ -25,7 +26,12 @@
 		let PADDLE_WIDTH;
 		let PADDLE_OFFSET;
 
-		function init() {
+		window.onload = function () {
+			canvas = document.getElementById('nyCanvas');
+			canvasContext = canvas.getContext('2d');
+			const rect = canvas.getBoundingClientRect();
+			
+			ballSize = 10;
 			ballX = canvas.width - 10;
 			ballY = Math.floor(Math.random() * canvas.height);
 
@@ -36,14 +42,6 @@
 			PADDLE_HEIGHT = 100;
 			PADDLE_WIDTH = 10;
 			PADDLE_OFFSET = 20;
-		}
-
-		window.onload = function () {
-			canvas = document.getElementById('nyCanvas');
-			canvasContext = canvas.getContext('2d');
-			const rect = canvas.getBoundingClientRect();
-			console.log(rect);
-			init();
 
 			window.setInterval(() => {
 				move();
@@ -54,28 +52,21 @@
 				if (e.clientY - rect.top > PADDLE_HEIGHT / 2 &&
 					e.clientY - rect.top < canvas.height - PADDLE_HEIGHT / 2)
 				{
-						console.log(e.clientY);
 						paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
 				}
 			});
-/*
-			canvas.addEventListener("touchmove", (e) => {
-				if (e.clientY - rect.top > PADDLE_HEIGHT / 2 &&
-					e.clientY - rect.top < canvas.height - PADDLE_HEIGHT / 2)
-					paddleY = e.clientY - rect.top - PADDLE_HEIGHT / 2;
-			}, false);*/
 		}
 
 		function move() {
-			if (ballX + 10 >= canvas.width) {
+			if (ballX + ballSize >= canvas.width) {
 				ballSpeedX = -ballSpeedX;
 			}
 
-			if (ballY + 10 >= canvas.height || ballY <= 0) {
+			if (ballY + ballSize >= canvas.height || ballY <= 0) {
 				ballSpeedY = -ballSpeedY;
 			}
 
-			if (ballX == PADDLE_OFFSET + PADDLE_WIDTH && ballY >= paddleY && ballY <= paddleY + PADDLE_HEIGHT) {
+			if (ballSpeedX < 0 && ballX + ballSize > PADDLE_OFFSET + PADDLE_WIDTH && ballX <= PADDLE_OFFSET + PADDLE_WIDTH && ballY >= paddleY && ballY <= paddleY + PADDLE_HEIGHT) {
 				ballSpeedX = -ballSpeedX;
 			}
 
@@ -84,8 +75,8 @@
 		}
 
 		function draw() {
-			colorRect(0, 0, 800, 600, 'black');
-			colorRect(ballX, ballY, 10, 10, 'red');
+			colorRect(0, 0, canvas.width, canvas.height, 'black');
+			colorRect(ballX, ballY, ballSize, ballSize, 'red');
 			colorRect(PADDLE_OFFSET, paddleY, PADDLE_WIDTH, PADDLE_HEIGHT, 'white');
 
 			if(ballX < 0) {
